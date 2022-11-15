@@ -42,9 +42,144 @@ traits that unit tests must have, such as:
 
 ### What Should You Test?
 
+One of the most common questions that many developers ask, especially when they are just starting out, is what should I
+test first? It is a legitimate question, and it is also one that is interesting, because the applications that are being
+built today are often vast and have many complexities to them. As you know, unit testing makes it a lot easier to do
+this task. This is because the whole idea of unit testing is to focus only on the **smallest components** of your code.
+_Instead, it is to try to think about how to test the entire application you are putting together_. In order to check
+that your code works as expected, you should always think about the kind of tests you will be writing before you start
+writing any code. You will be able to gain a lot of experience as you write more and more unit tests. You will be able
+to understand what works and what may cause problems later on.
+
+### Unit Test Structure
+
+When structuring your project, you can follow some clear standards to make your application's code more accessible to
+other Python developers. These simple rules are easy to apply and result in a uniform structure to make it easy to find
+the test and code files you need.
+
+- Unit tests should be placed under a `test/unit` directory at the top level of your project folder.
+- All folders within the application's code should be mirrored by test folders under `test/unit`, which will have the
+  unit tests for each file in them. For example, `app/data` should have a mirrored folder of `test/unit/app/data`.
+- All unit test files should mirror the name of the file they are testing, with `_testas` the suffix. For example,
+  `app/data/data_interface.py` should have a test file of `test/unit/app/data/data_interface_test.py`.
+
+```text
+.
+├── README.md
+├── src
+├── __init__.py
+├── add.py
+└── test
+    ├── __init__.py
+    └── unit
+        ├── __init__.py
+        ├── test_add.py
+        ├── test_module01.py
+        ├── test_module02.py
+        ├── test_module03.py
+        └── test_module05.py
+
+
+```
+
+Note: The `__init__.py` files indicate that the folder is a Python package so that you can import them into other Python
+files. For example, in `test_add.py`, you need to import methods from `add.py` so that you can test it.
+
 ### Using Unittest
 
+An example of a unit test program using a small calculator is considered to be one of the classic examples of unit
+testing. The standard library of Python actually includes a lot of basic math functionality that can be used to do
+mathematical calculations.
+
+#### Example 1
+
+The question is what would happen if you wrapped that into a simple-to-use command-line application that would perform
+some simple calculations and could be run by anyone? It is the first scenario in the series that demonstrates how to
+implement the calculator class of the earlier example of an application. Let's begin by looking at the `add()` method,
+which looks something like this.
+
 ```python
+# src/add.py
+
+def addition(x, y):
+    """Simple addition function"""
+    return x + y
+
+```
+
+```python
+# test/unit/test_add.py
+
+import unittest
+
+from src import add
+
+
+class TestCalculator(unittest.TestCase):
+
+    def test_add(self):
+        self.assertEqual(add.addition(1, 5), 6)
+
+```
+
+In order to test the code, we will create a new file containing the test cases. A general convention is to use either
+`filename_test.py` or `test_filename.py` to run the tests. In this case, we will use the `test_filename.py` file.
+
+Code explanation:-
+
+- We imported the `unittest` module and `add`.
+- Created a class inheriting from `unittest.TestCase()`.
+- Then we defined our test for the addition function. You must note that the method/function must start with `test_.`
+  Otherwise, it won’t run. See the example below:-
+
+As a final step, we have used the `assertEqual` statement in order to verify equality.
+
+To run a single test module, in this case `test_add.py`: First of all, make sure you are in the root directory of the
+project.
+
+```text
+(venv) Sureshs-MBP:python-unit-testing-1 suresh$ ls
+README.md       src             test
+
+```
+
+Run the following command in order to run the test: `python -m unittest test.unit.test_add`
+
+This is the result that you should see when you run the program:
+
+```text
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+
+```
+
+There is a list of assert statements available
+on [this page](https://docs.python.org/3/library/unittest.html#assert-methods) that you can use as per your
+requirements. Below is a list
+of some of the most common assert statements.
+
+| Method                      | Checks for               |
+|-----------------------------|--------------------------|
+| `assertEqual(a, b)`         | a `==` b                 |
+| `assertNotEqual(a, b)`      | a `!=` b                 |
+| `assertTrue(x)`             | `bool(x)` `is` `True`    |
+| `assertFalse(x)`            | `bool(x)` `is` `False`   |
+| `assertIs(a, b)`            | a `is` b                 |
+| `assertIsNot(a, b)`         | a `is` `not` b           |
+| `assertIsNone(x)`           | x `is` `None`            |
+| `assertIsNotNone(x)`        | x `is` `not` `None`      |
+| `assertIn(a, b)`            | a `in` b                 |
+| `assertNotIn(a, b)`         | a `not` `in` b           |
+| `assertIsInstance(a, b)`    | `isinstance(a, b)`       |
+| `assertNotIsInstance(a, b)` | `not` `isinstance(a, b)` |
+
+#### Example 2
+
+```python
+# test/unit/test_module01.py
 import unittest
 
 
@@ -74,15 +209,15 @@ lesson, you will learn about the guidelines and naming conventions that should b
 The `assertTrue()` and `assertFalse()` methods are assertion methods which check if the argument
 passed to them is `True` or `False`, respectively.
 
-If the argument meets the assert condition, the test case passes; otherwise, it fails. `unittest.main()` is the test
+If the argument meets the `assert` condition, the test case passes; otherwise, it fails. `unittest.main()` is the test
 runner. We will explore more assert methods in detail later.
 
-Run the following command in order to run the test: `python3 test_module01.py -v`
+Run the following command in order to run the test: `python3 -m unittest test.unit.test_module01 -v`
 
 Since verbosity is disabled by default, the `-v` option will give you more detailed information about the test.
 
 ```text
-(venv) Sureshs-MBP:unit suresh$ python3 test_module01.py -v
+(venv) Sureshs-MBP:unit suresh$ python3 -m unittest test.unit.test_module01 -v
 test_case_01 (__main__.TestClass01) ... ok
 test_case_02 (__main__.TestClass01) ... ok
 
@@ -90,10 +225,115 @@ test_case_02 (__main__.TestClass01) ... ok
 Ran 2 tests in 0.000s
 
 OK
-(venv) Sureshs-MBP:unit suresh$ 
+```
+
+For a list of all the command-line options, use the following command `python3 –m unittest -h`
+
+- `-h`, --help Show this message
+- `-v`, --verbose Verbose output
+- `-q`, --quiet Minimal output
+- `-f`, --failfast Stop on first failure
+- `-c`, --catch Catch control-C and display results
+- `-b`, --buffer Buffer stdout and stderr during test runs
+
+### Order of Execution of the Test Methods
+
+```python
+import unittest
+import inspect
+
+debug = True
+
+
+class TestClass02(unittest.TestCase):
+    def test_case02(self):
+        print("\nRunning Test Method : " + inspect.stack()[0][3])
+
+    def test_case01(self):
+        print("\nRunning Test Method : " + inspect.stack()[0][3])
+
+
+if __name__ == '__main__':
+    unittest.main(verbosity=2)
 
 ```
+
+It is important to note that no matter which order the test methods were listed in the code, the test methods ran in
+alphabetical order. Using `inspect.stack()[0][3]`, you can print out the name of the test method that is currently
+running. When debugging, you can use it to see which methods are executed in which order in the test class.
+
+**How does it work?**
+
+- `inspect.stack()` returns a list with frame records.
+- The fourth element of the frame record (inspect.stack()[0][3]) is the function name.
+
+```text
+(venv) Sureshs-MBP:unit suresh$ python3 -m unittest test.unit.test_module01 -v
+test_case01 (__main__.TestClass02) ... 
+Running Test Method : test_case01
+ok
+test_case02 (__main__.TestClass02) ... 
+Running Test Method : test_case02
+ok
+
+```
+
+### Test Fixtures
+
+A fixture is a set of resources needed for a test to be performed. Suppose, for example, that you are writing several
+tests about the same class, and each of those tests needs an instance of that class for testing purposes in order to
+run. Database connections and temporary files are other test fixtures that are often used. Many people would argue that
+the use of external resources makes these tests not "unit tests", but they can still be useful tests even if they are
+not "unit tests". It is pertinent to note that `TestCase` includes a hook that allows you to configure and clean up any
+fixtures that your tests may require. In order to **_configure_** the fixtures, you will need to override the `setUp()`
+method. In order to clean up, you need to override `tearDown()` to do so.
+
+```python
+import unittest
+
+
+class TestClass06(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """called once, before any test"""
+        print("In setUpClass()...")
+
+    @classmethod
+    def tearDownClass(cls):
+        """called once, after all tests, if setUpClass successful"""
+        print("In tearDownClass()...")
+
+    def setUp(self):
+        """called multiple times, before every test method"""
+        print("\nIn setUp()...")
+
+    def tearDown(self):
+        """called multiple times, after every test method"""
+        print("In tearDown()...")
+
+    def test_case01(self):
+        self.assertTrue("PYTHON".isupper())
+        print("In test_case01()")
+
+    def test_case02(self):
+        self.assertFalse("python".isupper())
+        print("In test_case02()")
+
+
+if __name__ == '__main__':
+    unittest.main()
+
+```
+
+- The `setUpModule()` and `tearDownModule()` methods are the module-level fixtures.
+- `setUpModule()` method is executed before any method
+  in the test module. tearDownModule() is executed after all methods in the test module. setUpClass() and
+  tearDownClass()
+  are class-level fixtures. setUpClass() is executed before any method in the test class. tearDownClass() is executed
+  after all methods in the test class.
 
 ### References
 
 - [TestCase](https://docs.python.org/3/library/unittest.html)
+- [Inspect](https://docs.python.org/3/library/inspect.html)
+- 
