@@ -8,8 +8,10 @@
 
 *After this lesson, students will be able to:*
 
-- Write simple unit test
-- Implementing a sample script using the Selenium WebDriver Python client library
+- Explain what unit testing is and why it is important
+- Organize the project structure for the purpose of unit testing
+- Make use of assert statements
+- Write & run unit test
 
 ### What is Unit Testing?
 
@@ -200,17 +202,14 @@ if __name__ == '__main__':
 
 ```
 
-In the code above, the `import unittest` statement imports the unittest module. `TestClass01` is the test class. It is
-subclassed from the [TestCase](https://docs.python.org/3/library/unittest.html) class in the unittest module.
-
-The class methods `test_case01()` and `test_case02(`) are test methods, as their names start with test_ (Later in the
-lesson, you will learn about the guidelines and naming conventions that should be followed when writing tests).
-
-The `assertTrue()` and `assertFalse()` methods are assertion methods which check if the argument
-passed to them is `True` or `False`, respectively.
-
-If the argument meets the `assert` condition, the test case passes; otherwise, it fails. `unittest.main()` is the test
-runner. We will explore more assert methods in detail later.
+- In the code above, the `import unittest` statement imports the unittest module. `TestClass01` is the test class. It is
+  subclassed from the [TestCase](https://docs.python.org/3/library/unittest.html) class in the unittest module.
+- The class methods `test_case01()` and `test_case02(`) are test methods, as their names start with test_ (Later in the
+  lesson, you will learn about the guidelines and naming conventions that should be followed when writing tests).
+- The `assertTrue()` and `assertFalse()` methods are assertion methods which check if the argument
+  passed to them is `True` or `False`, respectively.
+- If the argument meets the `assert` condition, the test case passes; otherwise, it fails. `unittest.main()` is the test
+  runner. We will explore more assert methods in detail later.
 
 Run the following command in order to run the test: `python3 -m unittest test.unit.test_module01 -v`
 

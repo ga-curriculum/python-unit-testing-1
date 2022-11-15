@@ -1,7 +1,6 @@
 import unittest
 
 
-
 class TestClass06(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
