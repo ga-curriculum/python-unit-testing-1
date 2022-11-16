@@ -238,6 +238,8 @@ For a list of all the command-line options, use the following command `python3 â
 ### Order of Execution of the Test Methods
 
 ```python
+# test/unit/test_module02.py
+
 import unittest
 import inspect
 
@@ -288,6 +290,8 @@ fixtures that your tests may require. In order to **_configure_** the fixtures, 
 method. In order to clean up, you need to override `tearDown()` to do so.
 
 ```python
+# test/unit/test_module05.py
+
 import unittest
 
 
@@ -325,11 +329,169 @@ if __name__ == '__main__':
 ```
 
 - The `setUpModule()` and `tearDownModule()` methods are the module-level fixtures.
-- `setUpModule()` method is executed before any method
-  in the test module. tearDownModule() is executed after all methods in the test module. setUpClass() and
-  tearDownClass()
-  are class-level fixtures. setUpClass() is executed before any method in the test class. tearDownClass() is executed
-  after all methods in the test class.
+- `setUpModule()` method is executed before any method in the test `module.tearDownModule()` is executed after all
+  methods in the test module.
+- `setUpClass()` and `tearDownClass()` are class-level fixtures. `setUpClass()` is executed
+  before any method in the test class. `tearDownClass()` is executed after all methods in the test class.
+
+```python
+# src/employee.py
+
+class Employee:
+    """Employee class"""
+
+    def __init__(self, first, last):
+        self.first = first
+        self.last = last
+
+    @property
+    def email(self):
+        return f'{self.first}{self.last}@email.com'
+
+    @property
+    def fullname(self):
+        return f'{self.first.capitalize()} {self.last.capitalize()}'
+
+
+if __name__ == '__main__':
+    employee = Employee("Suresh", "Sigera")
+    print(employee.fullname)
+
+```
+
+Now, whenever we create an instance of an employee with the first and last name, it will create the email and full name
+of the employee automatically. This is because we enter the first and last names. As well, the employee's full name and
+email address should be changed whenever the first or last name of the employee is changed.
+
+```python
+# test/unit/employee.py
+
+import unittest
+from src.employee import Employee
+
+
+class TestEmployee(unittest.TestCase):
+
+    def test_email(self):
+        emp_1 = Employee('saral', 'gyaan')
+        emp_2 = Employee('udit', 'vashisht')
+        self.assertEqual(emp_1.email, 'saralgyaan@email.com')
+        self.assertEqual(emp_2.email, 'uditvashisht@email.com')
+
+        emp_1.first = "first"
+        emp_2.first = "second"
+
+        self.assertEqual(emp_1.email, 'firstgyaan@email.com')
+        self.assertEqual(emp_2.email, 'secondvashisht@email.com')
+
+    def test_fullname(self):
+        emp_1 = Employee('saral', 'gyaan')
+        emp_2 = Employee('udit', 'vashisht')
+        self.assertEqual(emp_1.fullname, 'Saral Gyaan')
+        self.assertEqual(emp_2.fullname, 'Udit Vashisht')
+
+        emp_1.first = "first"
+        emp_2.first = "second"
+
+        self.assertEqual(emp_1.fullname, 'First Gyaan')
+        self.assertEqual(emp_2.fullname, 'Second Vashisht')
+
+
+if __name__ == '__main__':
+    unittest.main()
+
+```
+
+Running this will give the following output:-
+
+```text
+(venv) Sureshs-MBP:python-unit-testing-1 suresh$ python3 -m unittest test.unit.test_employee
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+OK
+
+```
+
+The above test violates the **_DRY convention_** as we create instances of the individual for each test, and therefore
+we are creating instances of the individual for each test. We can overcome this problem by using the `setUp`
+and `tearDown` methods
+in our code and modifying the code accordingly. It is not strictly necessary that we pass the tearDown method. This is
+because it is only useful when testing involves the creation of files, databases, etc., and we want to be able to clean
+them up at the end of the test and start over. It will be helpful if we add the `print()` function to our tests so that
+we can illustrate how it works more clearly.
+
+```python
+# test/unit/employee.py
+
+import unittest
+from src.employee import Employee
+
+
+class TestEmployee(unittest.TestCase):
+
+    def setUp(self):
+        print("Setting up!")
+        self.emp_1 = Employee('saral', 'gyaan')
+        self.emp_2 = Employee('udit', 'vashisht')
+
+    def tearDown(self):
+        print("Tearing down!\n")
+
+    def test_email(self):
+        print("Testing email.")
+        self.assertEqual(self.emp_1.email, 'saralgyaan@email.com')
+        self.assertEqual(self.emp_2.email, 'uditvashisht@email.com')
+
+        self.emp_1.first = "first"
+        self.emp_2.first = "second"
+
+        self.assertEqual(self.emp_1.email, 'firstgyaan@email.com')
+        self.assertEqual(self.emp_2.email, 'secondvashisht@email.com')
+
+    def test_fullname(self):
+        print("Testing Full Name.")
+        self.assertEqual(self.emp_1.fullname, 'Saral Gyaan')
+        self.assertEqual(self.emp_2.fullname, 'Udit Vashisht')
+
+        self.emp_1.first = "first"
+        self.emp_2.first = "second"
+
+        self.assertEqual(self.emp_1.fullname, 'First Gyaan')
+        self.assertEqual(self.emp_2.fullname, 'Second Vashisht')
+
+
+if __name__ == '__main__':
+    unittest.main()
+```
+
+Output:-
+
+```text
+(venv) Sureshs-MBP:python-unit-testing-1 suresh$ python3 -m unittest test.unit.test_employee
+Setting up!
+Testing email.
+Tearing down!
+
+.Setting up!
+Testing Full Name.
+Tearing down!
+
+.
+----------------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+OK
+
+```
+
+The output shows that the `setUp` method is called before all tests, and the `tearDown` method is called after all
+tests. This could be useful if you are running multiple tests.
+
+Some of the use-cases might require that some code be run before the unit tests are run as well as some code to be run
+after the unit tests are run so that some code is run before and after the unit tests are run. In such a scenario, you
+can use two `class` methods named `setUpClass` and `tearDownClass`.
 
 ### References
 

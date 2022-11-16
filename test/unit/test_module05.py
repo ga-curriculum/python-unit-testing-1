@@ -1,7 +1,7 @@
 import unittest
 
 
-class TestClass06(unittest.TestCase):
+class TestClass05(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """called once, before any test"""
