@@ -493,6 +493,81 @@ Some of the use-cases might require that some code be run before the unit tests 
 after the unit tests are run so that some code is run before and after the unit tests are run. In such a scenario, you
 can use two `class` methods named `setUpClass` and `tearDownClass`.
 
+### Ignoring broken tests
+
+There are times when a test is known to fail, but we do not want the test suite to report that failure to the user. The
+reason for this may be that a broken or unfinished feature already has tests written. However, we aren't focusing on
+improving it right now in order to fix it. There are many reasons why this occurs. The most common reason is that a
+certain feature does not exist on a specific platform, Python version, or in an advanced version of a certain library.
+As a Python user, it is possible to use a few decorators to mark tests with the expectation that they will fail. This
+can enable you to skip them if conditions are known to occur.
+
+These decorators are as follows:
+
+- `expectedFailure()`
+- `skip(reason)`
+- `skipIf(condition, reason)`
+- `skipUnless(condition, reason)`
+
+The `skip` method goes one step further and doesn't even bother to run the test. In order to skip the test, it expects
+only one string argument describing the reason why it was omitted. The other two decorators accept two arguments, one a
+Boolean expression that indicates whether or not the test should be run, and a similar description. In use, these three
+decorators might be applied as they are in the following code:
+
+```python
+import unittest
+import sys
+
+
+class SkipTests(unittest.TestCase):
+    @unittest.expectedFailure
+    def test_fails(self):
+        self.assertEqual(False, True)
+
+    @unittest.skip("Test is useless")
+    def test_skip(self):
+        self.assertEqual(False, True)
+
+    @unittest.skipIf(sys.version_info.minor == 4, "broken on 3.4")
+    def test_skipif(self):
+        self.assertEqual(False, True)
+
+    @unittest.skipUnless(
+        sys.platform.startswith("linux"), "broken unless on linux"
+    )
+    def test_skip_unless(self):
+        self.assertEqual(False, True)
+
+
+if __name__ == "__main__":
+    unittest.main()
+```
+
+Running this using `python3 -m unittest test.unit.test_skip -v` will give the following output:-
+
+```text
+test_fails (test.unit.test_skip.SkipTests) ... expected failure
+test_skip (test.unit.test_skip.SkipTests) ... skipped 'Test is useless'
+test_skip_if (test.unit.test_skip.SkipTests) ... FAIL
+test_skip_unless (test.unit.test_skip.SkipTests) ... skipped 'broken unless on linux'
+
+======================================================================
+FAIL: test_skip_if (test.unit.test_skip.SkipTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/suresh/Documents/ga/abbott/python-unit-testing-1/test/unit/test_skip.py", line 16, in test_skip_if
+    self.assertEqual(False, True)
+AssertionError: False != True
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.000s
+
+FAILED (failures=1, skipped=2, expected failures=1)
+```
+
+The `x` on the first line indicates an expected failure; the two `s` characters represent skipped tests, and the `F`
+indicates a real failure, since the conditional to `skipUnless` was True on my system.
+
 ### References
 
 - [TestCase](https://docs.python.org/3/library/unittest.html)
