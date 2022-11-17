@@ -87,7 +87,7 @@ the test and code files you need.
 Note: The `__init__.py` files indicate that the folder is a Python package so that you can import them into other Python
 files. For example, in `test_add.py`, you need to import methods from `add.py` so that you can test it.
 
-### Using Unittest
+### Using `unittest`
 
 An example of a unit test program using a small calculator is considered to be one of the classic examples of unit
 testing. The standard library of Python actually includes a lot of basic math functionality that can be used to do
