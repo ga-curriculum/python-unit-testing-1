@@ -566,7 +566,11 @@ FAILED (failures=1, skipped=2, expected failures=1)
 The `x` on the first line indicates an expected failure; the two `s` characters represent skipped tests, and the `F`
 indicates a real failure, since the conditional to `skipUnless` was True on my system.
 
-### References
+### Further Reading
 
+This section provides more resources on the topic if you are looking to go deeper.
+
+- [unittest](https://docs.python.org/3/library/unittest.html) module (and the list
+  of [assert](https://docs.python.org/3/library/unittest.html#assert-methods) methods)
 - [TestCase](https://docs.python.org/3/library/unittest.html)
 - [Inspect](https://docs.python.org/3/library/inspect.html)
