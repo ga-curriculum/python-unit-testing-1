@@ -132,7 +132,6 @@ Code explanation:-
 - We imported the `unittest` module and `add`.
 - Created a class inheriting from `unittest.TestCase()`.
 - Then we defined our test for the addition function. You must note that the method/function must start with `test_.`
-  Otherwise, it won’t run. See the example below:-
 
 As a final step, we have used the `assertEqual` statement in order to verify equality.
 
