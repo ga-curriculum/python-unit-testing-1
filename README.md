@@ -132,8 +132,7 @@ Code explanation:-
 - We imported the `unittest` module and `add`.
 - Created a class inheriting from `unittest.TestCase()`.
 - Then we defined our test for the addition function. You must note that the method/function must start with `test_.`
-
-As a final step, we have used the `assertEqual` statement in order to verify equality.
+- As a final step, we have used the `assertEqual` statement in order to verify equality.
 
 To run a single test module, in this case `test_add.py`: First of all, make sure you are in the root directory of the
 project.
